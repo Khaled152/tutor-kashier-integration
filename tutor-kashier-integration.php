@@ -132,13 +132,14 @@ function tutor_kashier_init() {
             ];
         
             $gateways[] = [
-                'name'             => $key,
-                'label'            => $data['label'],
-                'is_installed'     => true,
-                'is_plugin_active' => true,
-                'is_active'        => $is_active,
-                'icon'             => '', 
-                'fields'           => $fields,
+                'name'                 => $key,
+                'label'                => $data['label'],
+                'is_installed'         => true,
+                'is_plugin_active'     => true,
+                'is_active'            => $is_active,
+                'support_subscription' => true,  // Enable subscription support
+                'icon'                 => '', 
+                'fields'               => $fields,
             ];
         
             return $gateways;

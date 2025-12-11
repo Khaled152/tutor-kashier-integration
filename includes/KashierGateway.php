@@ -250,4 +250,38 @@ abstract class KashierBaseGateway extends GatewayBase {
         
         return $result;
     }
+
+    /**
+     * Make recurring payment (Subscription support)
+     * 
+     * For Kashier, we don't have tokenization, so this will redirect
+     * the user to make a manual payment for subscription renewal.
+     * 
+     * @param int $order_id Order ID for recurring payment
+     * @throws \Exception If payment setup fails
+     * @return void
+     */
+    public function make_recurring_payment( int $order_id ) {
+        // Validate order ID
+        if ( ! $order_id ) {
+            throw new \InvalidArgumentException( 'Invalid order ID for recurring payment.' );
+        }
+
+        try {
+            // Prepare recurring payment data using Tutor's method
+            $payment_data = \Tutor\Ecommerce\CheckoutController::prepare_recurring_payment_data( $order_id );
+
+            if ( ! $payment_data ) {
+                throw new \RuntimeException( 'Failed to prepare recurring payment data for order: ' . $order_id );
+            }
+
+            // Use the same payment flow as regular payments
+            $this->setup_payment_and_redirect( $payment_data );
+            
+        } catch ( \Throwable $th ) {
+            // Log error and rethrow
+            error_log( 'Kashier recurring payment error for order ' . $order_id . ': ' . $th->getMessage() );
+            throw $th;
+        }
+    }
 }

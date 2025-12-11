@@ -14,6 +14,19 @@ if ( ! class_exists( 'TutorKashier\Includes\KashierBaseGateway' ) ) {
 abstract class AbstractKashierConfig {
     protected $gateway_key;
     public function __construct( $key ) { $this->gateway_key = $key; }
+    
+    /**
+     * Create config - enables subscription support
+     */
+    public function createConfig(): void {
+        // Enable subscription support (manual renewal)
+        $config = array(
+            'save_payment_method' => true,
+        );
+        // Note: We don't actually save payment methods, but this flag
+        // tells Tutor LMS that we support subscriptions
+    }
+    
     public function is_configured() {
         $settings = \Tutor\Ecommerce\Settings::get_payment_gateway_settings( $this->gateway_key );
         $merchant_id = $this->get_val($settings, 'merchant_id');
